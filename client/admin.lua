@@ -62,6 +62,7 @@ local function viewWeatherEvent(index, weatherEvent)
     lib.registerContext({
         id = 'Renewed-Weathersync:client:changeWeather',
         title = 'Change Weather',
+        menu = 'Renewed-Weathersync:client:manageWeather',
         options = {
             {
                 title = 'Info',
