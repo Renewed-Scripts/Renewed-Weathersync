@@ -14,7 +14,7 @@ return {
         ['CLOUDS'] = 0.1, -- 10% chance
         ['EXTRASUNNY'] = 0.4, -- 40% chance
         ['FOGGY'] = 0.1,
-        ['NEUTRAL'] = 0.1,
+        ['NEUTRAL'] = 0.0,
         ['OVERCAST'] = 0.1,
         ['RAIN'] = 0.1,
         ['SMOG'] = 0.1,
