@@ -58,7 +58,7 @@ lib.callback.register('Renewed-Weathersync:server:setEventTime', function(source
             end
         end
 
-        return weatherType
+        return eventTime
     end
 
     return false
