@@ -1,5 +1,6 @@
 local serverWeather = GlobalState.weather
 local hadSnow = false
+local playerState = LocalPlayer.state
 
 local function resetWeatherParticles()
     if hadSnow then
@@ -26,29 +27,39 @@ local function setWeatherParticles()
     end
 end
 
+local function setWeather(forceSwap)
+    SetRainLevel(-1.0)
+
+    if forceSwap then
+        SetWeatherTypeNowPersist(serverWeather.weather)
+    else
+        SetWeatherTypeOvertimePersist(serverWeather.weather, 60.0)
+    end
+
+    if serverWeather.windDirection then
+        SetWindDirection(math.rad(serverWeather.WindDirection))
+    end
+
+    if serverWeather.windSpeed then
+        SetWind(serverWeather.windSpeed / 2)
+    end
+
+    if serverWeather.hasSnow then
+        setWeatherParticles()
+    end
+
+    if not serverWeather.hasSnow and hadSnow then
+        resetWeatherParticles()
+    end
+end
+
 AddStateBagChangeHandler('weather', nil, function(bagName, _, value)
     if value and bagName == 'global' then
-        SetRainLevel(-1.0)
-
-        SetWeatherTypeOvertimePersist(value.weather, 60.0)
-
-        if value.windDirection then
-            SetWindDirection(math.rad(value.WindDirection))
-        end
-
-        if value.windSpeed then
-            SetWind(value.windSpeed / 2)
-        end
-
-        if value.hasSnow then
-            setWeatherParticles()
-        end
-
-        if not value.hasSnow and hadSnow then
-            resetWeatherParticles()
-        end
-
         serverWeather = value
+
+        if playerState.syncWeather then
+            setWeather()
+        end
     end
 end)
 
@@ -64,18 +75,24 @@ CreateThread(function ()
     SetWind(0.1)
     WaterOverrideSetStrength(0.5)
 
-    if serverWeather.windDirection then
-        SetWindDirection(math.rad(serverWeather.windDirection))
-    end
+    setWeather(true)
 
-    if serverWeather.windSpeed then
-        SetWind(serverWeather.windSpeed / 2)
-    end
+    playerState.syncWeather = true
+end)
 
-    if serverWeather.hasSnow then
-        setWeatherParticles()
+AddStateBagChangeHandler('syncWeather', ('player:%s'):format(cache.serverId), function(_, _, value)
+    if value then
+        SetTimeout(0, function()
+            while not playerState.syncWeather do
+                SetRainLevel(0.0)
+                SetWeatherTypePersist('CLEAR')
+                SetWeatherTypeNow('CLEAR')
+                SetWeatherTypeNowPersist('CLEAR')
+                NetworkOverrideClockTime(18, 0, 0)
+                Wait(5000)
+            end
+        end)
+    else
+        setWeather(true)
     end
-
-    SetRainLevel(-1.0)
-    SetWeatherTypeNowPersist(serverWeather.weather)
 end)
