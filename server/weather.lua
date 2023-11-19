@@ -1,6 +1,6 @@
 local buildWeatherList = require 'server.weatherbuilder'
 
-local useScheduledWeather = require 'config.weater'.useScheduledWeather
+local useScheduledWeather = require 'config.weather'.useScheduledWeather
 local weatherList = buildWeatherList()
 
 
