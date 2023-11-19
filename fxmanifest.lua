@@ -5,7 +5,7 @@ use_fxv2_oal 'yes'
 
 name 'Renewed Weather Sync'
 author 'FjamZoo - Renewed Scripts'
-version '0.69.420'
+version '1.0.0'
 
 shared_scripts{
     '@ox_lib/init.lua',
