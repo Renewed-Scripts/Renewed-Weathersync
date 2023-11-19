@@ -52,7 +52,7 @@ jobs:
       - name: Bundle files
         run: |
           mkdir -p ./temp/Renewed-Weathersync
-          cp ./{LICENSE,README.md,fxmanifest.lua,Renewed-Weathersync.sql} ./temp/Renewed-Weathersync
+          cp ./{LICENSE,README.md,fxmanifest.lua} ./temp/Renewed-Weathersync
           cp -r ./{client,compatability,config,server} ./temp/Renewed-Weathersync
           cd ./temp && zip -r ../Renewed-Weathersync.zip ./Renewed-Weathersync
 
