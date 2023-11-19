@@ -1,4 +1,4 @@
-if GetResourceState('qb-core') == 'missing' and GetResourceState('qbx_core') == 'missing' then return print("qb missing") end
+if GetResourceState('qb-core') == 'missing' and GetResourceState('qbx_core') == 'missing' then return end
 
 local disablesync = false
 local currentTime = GlobalState.currentTime
@@ -18,14 +18,18 @@ end)
 
 local function disabledSync()
     if not disablesync then
-        SetRainLevel(0.0)
-        SetWeatherTypePersist('CLEAR')
-        SetWeatherTypeNow('CLEAR')
-        SetWeatherTypeNowPersist('CLEAR')
-        NetworkOverrideClockTime(22, 0, 0)
-        NetworkOverrideClockMillisecondsPerGameMinute(99999999)
-
         disablesync = true
+        NetworkOverrideClockMillisecondsPerGameMinute(99999999)
+        CreateThread(function()
+            while disablesync do
+                SetRainLevel(0.0)
+                SetWeatherTypePersist('CLEAR')
+                SetWeatherTypeNow('CLEAR')
+                SetWeatherTypeNowPersist('CLEAR')
+                NetworkOverrideClockTime(18, 0, 0)
+                Wait(5000)
+            end
+        end)
     end
 end
 
