@@ -1,5 +1,6 @@
 local buildWeatherList = require 'server.weatherbuilder'
 
+local useScheduledWeather = require 'config.weater'.useScheduledWeather
 local weatherList = buildWeatherList()
 
 
@@ -69,3 +70,31 @@ lib.addCommand('weather', {
 }, function(source)
     TriggerClientEvent('Renewed-Weather:client:viewWeatherInfo', source, weatherList)
 end)
+
+
+-- Scheduled restart --
+if useScheduledWeather then
+    local function forceSetWeather(weather)
+        for i = 1, #weatherList do
+            local event = weatherList[i]
+
+            if event then
+                event.weather = weather
+            end
+        end
+
+        GlobalState.weather = {
+            weather = weather
+        }
+    end
+
+    AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
+        if eventData.secondsRemaining == 900 then -- 15 Minutes Remaining
+            forceSetWeather('OVERCAST')
+        elseif eventData.secondsRemaining == 600 then -- 10 Minutes Remaining
+            forceSetWeather('RAIN')
+        elseif eventData.secondsRemaining == 300 then -- 5 Minutes Remaining
+            forceSetWeather('THUNDER')
+        end
+    end)
+end
