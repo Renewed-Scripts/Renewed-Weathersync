@@ -1,14 +1,22 @@
 local serverWeather = GlobalState.weather
 local hadSnow = false
 local playerState = LocalPlayer.state
+local hasIceResource = GetResourceState('nve_iced_alamo') ~= 'missing'
 
 local function resetWeatherParticles()
     if hadSnow then
         SetForceVehicleTrails(false)
         SetForcePedFootstepsTracks(false)
+        ReleaseScriptAudioBank('ICE_FOOTSTEPS')
+        ReleaseScriptAudioBank('SNOW_FOOTSTEPS')
         ForceSnowPass(false)
         WaterOverrideSetStrength(0.5)
         RemoveNamedPtfxAsset('core_snow')
+
+        if IsIplActive('alamo_ice') then
+            RemoveIpl('alamo_ice')
+        end
+
         hadSnow = false
     end
 end
@@ -21,7 +29,13 @@ local function setWeatherParticles()
         ForceSnowPass(true)
         SetForceVehicleTrails(true)
         SetForcePedFootstepsTracks(true)
+        RequestScriptAudioBank('ICE_FOOTSTEPS', false)
+        RequestScriptAudioBank('SNOW_FOOTSTEPS', false)
         WaterOverrideSetStrength(0.9)
+
+        if hasIceResource then 
+            RequestIpl('alamo_ice') 
+        end
 
         hadSnow = true
     end
