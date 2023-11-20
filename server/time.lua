@@ -1,13 +1,12 @@
 local Config = require 'config.time'
 
+local globalState = GlobalState
 
 -- GlobalState checks here are to ensure that the if the script is being restarted live the time doesn't reset.
-local nightScale = Config.timeScaleNight
-local nightStart, nightEnd = Config.nightTime.beginning, Config.nightTime.ending
 local configScale = Config.timeScale
-local currentScale = GlobalState.timeScale or (configScale > 2000 and configScale) or 2000
-local freezeTime = GlobalState.freezeTime or false
-local startTime = GlobalState.currentTime or {
+local currentScale = globalState.timeScale or (configScale > 2000 and configScale) or 2000
+local freezeTime = globalState.freezeTime
+local startTime = globalState.currentTime or {
     hour = Config.startUpHour,
     minute = Config.startUpMinute,
 }
@@ -16,15 +15,15 @@ local minute = startTime.minute
 local hour = startTime.hour
 
 -- Syncs the GlobalStates (does not replicate if the values are the same)
-GlobalState.timeScale = currentScale
-GlobalState.freezeTime = freezeTime
+globalState.timeScale = currentScale
+globalState.freezeTime = freezeTime
 
 
 -- Loop that syncs the minute and hours of the servers to clients.
 CreateThread(function()
     while true do
         if not freezeTime then
-            GlobalState.currentTime = {
+            globalState.currentTime = {
                 minute = minute == 59 and 0 or minute + 1,
                 hour = minute == 59 and (hour == 23 and 0 or hour + 1) or hour,
             }
@@ -44,6 +43,9 @@ AddStateBagChangeHandler('freezeTime', nil, function(bagName, _, value)
     end
 end)
 
+
+local nightScale = Config.timeScaleNight
+local nightStart, nightEnd = Config.nightTime.beginning, Config.nightTime.ending
 AddStateBagChangeHandler('currentTime', nil, function(bagName, _, value)
     if bagName == 'global' and value then
         hour = value.hour
@@ -51,10 +53,10 @@ AddStateBagChangeHandler('currentTime', nil, function(bagName, _, value)
 
         if (hour > nightStart or hour < nightEnd) and currentScale ~= nightScale then
             currentScale = nightScale
-            GlobalState.timeScale = currentScale
+            globalState.timeScale = currentScale
         elseif (hour < nightStart and hour > nightEnd) and currentScale ~= configScale then
             currentScale = configScale
-            GlobalState.timeScale = currentScale
+            globalState.timeScale = currentScale
         end
     end
 end)
@@ -84,7 +86,7 @@ lib.addCommand('time', {
 }, function(_, args) -- source, args
     local newHours, newMinutes = args.hour, args.minute or 0
 
-    GlobalState.currentTime = {
+    globalState.currentTime = {
         hour = newHours > 23 and 0 or newHours < 0 and 0 or newHours,
         minute = newMinutes > 59 and 59 or newMinutes < 0 and 0 or newMinutes,
     }
@@ -102,7 +104,7 @@ lib.addCommand('timescale', {
     },
 }, function(_, args) -- source, args
     if args.scale > 2000 then
-        GlobalState.timeScale = args.scale
+        globalState.timeScale = args.scale
     end
 end)
 
@@ -119,5 +121,5 @@ lib.addCommand('freezetime', {
 }, function(_, args)
     local newFreeze = args.time == 1 and true or false
 
-    GlobalState.freezeTime = newFreeze
+    globalState.freezeTime = newFreeze
 end)
