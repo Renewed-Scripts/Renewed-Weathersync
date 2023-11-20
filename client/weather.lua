@@ -81,15 +81,14 @@ CreateThread(function ()
 end)
 
 AddStateBagChangeHandler('syncWeather', ('player:%s'):format(cache.serverId), function(_, _, value)
-    if value then
+    if not value then
         SetTimeout(0, function()
             while not playerState.syncWeather do
                 SetRainLevel(0.0)
-                SetWeatherTypePersist('CLEAR')
-                SetWeatherTypeNow('CLEAR')
-                SetWeatherTypeNowPersist('CLEAR')
-                NetworkOverrideClockTime(18, 0, 0)
-                Wait(5000)
+                SetWeatherTypePersist('EXTRASUNNY')
+                SetWeatherTypeNow('EXTRASUNNY')
+                SetWeatherTypeNowPersist('EXTRASUNNY')
+                Wait(2500)
             end
         end)
     else
