@@ -33,8 +33,8 @@ local function setWeatherParticles()
         RequestScriptAudioBank('SNOW_FOOTSTEPS', false)
         WaterOverrideSetStrength(0.9)
 
-        if hasIceResource then 
-            RequestIpl('alamo_ice') 
+        if hasIceResource then
+            RequestIpl('alamo_ice')
         end
 
         hadSnow = true
@@ -67,8 +67,8 @@ local function setWeather(forceSwap)
     end
 end
 
-AddStateBagChangeHandler('weather', nil, function(bagName, _, value)
-    if value and bagName == 'global' then
+AddStateBagChangeHandler('weather', 'global', function(_, _, value)
+    if value then
         serverWeather = value
 
         if playerState.syncWeather then
@@ -77,11 +77,12 @@ AddStateBagChangeHandler('weather', nil, function(bagName, _, value)
     end
 end)
 
-AddStateBagChangeHandler('blackOut', nil, function(bagName, _, value)
-    if bagName == 'global' then
+AddStateBagChangeHandler('blackOut', 'global', function(_, _, value)
+    if type(value) == 'boolean' then
         SetArtificialLightsState(value)
-        SetArtificialLightsStateAffectsVehicles(false)
     end
+
+    SetArtificialLightsStateAffectsVehicles(false)
 end)
 
 -- Some startup shit --

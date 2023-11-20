@@ -37,8 +37,8 @@ end)
 --[[
     Add server side statebag change handlers so third party resources can set globalstates and we can replicate the data.
 ]]
-AddStateBagChangeHandler('freezeTime', nil, function(bagName, _, value)
-    if bagName == 'global' and value and next(value) then
+AddStateBagChangeHandler('freezeTime', 'global', function(_, _, value)
+    if value and next(value) then
         freezeTime = value
     end
 end)
@@ -46,8 +46,8 @@ end)
 
 local nightScale = Config.timeScaleNight
 local nightStart, nightEnd = Config.nightTime.beginning, Config.nightTime.ending
-AddStateBagChangeHandler('currentTime', nil, function(bagName, _, value)
-    if bagName == 'global' and value then
+AddStateBagChangeHandler('currentTime', 'global', function(_, _, value)
+    if value then
         hour = value.hour
         minute = value.minute
 
@@ -61,8 +61,8 @@ AddStateBagChangeHandler('currentTime', nil, function(bagName, _, value)
     end
 end)
 
-AddStateBagChangeHandler('timeScale', nil, function(bagName, _, value)
-    if bagName == 'global' and value then
+AddStateBagChangeHandler('timeScale', 'global', function(_, _, value)
+    if value then
         currentScale = value
     end
 end)
