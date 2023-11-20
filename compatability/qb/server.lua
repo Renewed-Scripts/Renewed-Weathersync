@@ -1,5 +1,7 @@
 local Config = require 'config.weather'
 
+local globalState = GlobalState
+
 local function exportHandler(exportName, func)
     AddEventHandler(('__cfx_export_qb-weathersync_%s'):format(exportName), function(setCB)
         setCB(func)
@@ -16,34 +18,36 @@ end)
 
 
 exportHandler('setWeather', function(weather)
-    GlobalState.weather.weather = weather
+    globalState.weather = {
+        weather = weather
+    }
 end)
 
 exportHandler('setTime', function(hour, minute)
-    GlobalState.currentTime = {
+    globalState.currentTime = {
         hour = hour,
         minute = minute,
     }
 end)
 
 exportHandler('setBlackout', function(state)
-    GlobalState.blackOut = state
+    globalState.blackOut = state
 end)
 
 exportHandler('setTimeFreeze', function(state)
-    GlobalState.freezeTime = state
+    globalState.freezeTime = state
 end)
 
 exportHandler('getBlackoutState', function()
-    return GlobalState.blackOut
+    return globalState.blackOut
 end)
 
 exportHandler('getTimeFreezeState', function()
-    return GlobalState.freezeTime
+    return globalState.freezeTime
 end)
 
 exportHandler('getWeatherState', function()
-    return GlobalState.weather?.weather
+    return globalState.weather?.weather
 end)
 
 exportHandler('getDynamicWeather', function()
@@ -51,7 +55,7 @@ exportHandler('getDynamicWeather', function()
 end)
 
 exportHandler('getTime', function()
-    local currentTime = GlobalState.currentTime
+    local currentTime = globalState.currentTime
 
     return currentTime.hour, currentTime.minute
 end)
