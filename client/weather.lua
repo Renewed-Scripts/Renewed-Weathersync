@@ -64,7 +64,7 @@ AddStateBagChangeHandler('weather', nil, function(bagName, _, value)
 end)
 
 AddStateBagChangeHandler('blackOut', nil, function(bagName, _, value)
-    if value and bagName == 'global' then
+    if bagName == 'global' then
         SetArtificialLightsState(value)
         SetArtificialLightsStateAffectsVehicles(false)
     end
