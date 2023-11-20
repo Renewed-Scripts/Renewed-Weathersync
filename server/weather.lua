@@ -98,3 +98,5 @@ if useScheduledWeather then
         end
     end)
 end
+
+require 'compatability.qb.server'
