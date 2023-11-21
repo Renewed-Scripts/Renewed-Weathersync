@@ -1,7 +1,6 @@
 local serverWeather = GlobalState.weather
 local hadSnow = false
 local playerState = LocalPlayer.state
-local hasIceResource = GetResourceState('nve_iced_alamo') ~= 'missing'
 
 local function resetWeatherParticles()
     if hadSnow then
@@ -33,7 +32,7 @@ local function setWeatherParticles()
         RequestScriptAudioBank('SNOW_FOOTSTEPS', false)
         WaterOverrideSetStrength(0.9)
 
-        if hasIceResource then
+        if GetResourceState('nve_iced_alamo') ~= 'missing' then
             RequestIpl('alamo_ice')
         end
 
