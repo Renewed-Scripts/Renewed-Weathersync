@@ -118,8 +118,6 @@ return function()
     local minutesSinceRain = Config.timeBetweenRain + 1
     local timeBeforeRain = Config.rainAfterRestart
 
-    local weatherCount = 0
-
     while true do
         if Config.useWeatherSequences then
             local timeUsed, rainMinutes, sequenceList = insertAllowedSequences(Config.weatherSequences, minutesSinceRain, timeBeforeRain)
@@ -130,7 +128,7 @@ return function()
         end
 
         if Config.useStaticWeather then
-            weatherCount = #weatherList
+            local weatherCount = #weatherList
 
             for weather, chance in pairs(Config.staticWeather) do
                 local hasRain = rainFilter[weather]
