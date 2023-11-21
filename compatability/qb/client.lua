@@ -8,3 +8,7 @@ end)
 RegisterNetEvent('qb-weathersync:client:EnableSync', function()
     playerState.syncWeather = true
 end)
+
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
+    playerState.syncWeather = true
+end)
