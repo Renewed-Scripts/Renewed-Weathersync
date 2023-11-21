@@ -92,6 +92,46 @@ if not useRealTime then
         }
     end)
 
+    lib.addCommand('noon', {
+        help = 'Set the current time to noon (12:00)',
+        restricted = 'group.admin',
+    }, function(_, _)
+        globalState.currentTime = {
+            hour = 12,
+            minute = 0,
+        }
+    end)
+
+    lib.addCommand('morning', {
+        help = 'Set the current time to morning (9:00)',
+        restricted = 'group.admin',
+    }, function(_, _)
+        globalState.currentTime = {
+            hour = 9,
+            minute = 0,
+        }
+    end)
+    
+    lib.addCommand('evening', {
+        help = 'Set the current time to evening (18:00)',
+        restricted = 'group.admin',
+    }, function(_, _)
+        globalState.currentTime = {
+            hour = 18,
+            minute = 0,
+        }
+    end)
+    
+    lib.addCommand('night', {
+        help = 'Set the current time to night (23:00)',
+        restricted = 'group.admin',
+    }, function(_, _)
+        globalState.currentTime = {
+            hour = 23,
+            minute = 0,
+        }
+    end)
+
     lib.addCommand('timescale', {
         help = ('Set milliseconds per game second (default %s)'):format(currentScale),
         restricted = 'group.admin',
