@@ -46,6 +46,3 @@ AddStateBagChangeHandler('syncWeather', ('player:%s'):format(cache.serverId), fu
         NetworkOverrideClockTime(18, 0, 0)
     end
 end)
-
-
-require 'compatability.qb.client'

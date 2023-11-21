@@ -18,6 +18,12 @@ Renewed Weathersync is made so you do not need to worry about syncing time and w
 2. Copy the `Renewed-Weathersync` folder into your server directory.
 3. Add `start Renewed-Weathersync` to your `server.cfg` file.
 
+## Removing compatability files
+Currently we have compatability files for qb and cd easy time, qb is automatically detected but if you have never used cd_easytime before simply remove dependencies by doing the following:
+1. Headover to your server.cfg
+2. Copy and paste `setr weather_disablecd true` into your server.cfg
+3. and that's it you now disabled cd_easytime compatability!
+
 ## Configuration
 You can configure the resource by modifying the `weather.lua` & `time.lua` files.
 
