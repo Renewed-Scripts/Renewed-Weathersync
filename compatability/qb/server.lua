@@ -19,7 +19,8 @@ end)
 
 exportHandler('setWeather', function(weather)
     globalState.weather = {
-        weather = weather
+        weather = weather,
+        time = 9999999999
     }
 end)
 
