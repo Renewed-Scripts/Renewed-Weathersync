@@ -17,10 +17,6 @@ local function executeCurrentWeather()
 end
 
 local function runWeatherList()
-    table.sort(weatherList, function (a, b)
-        return a.epochTime < b.epochTime
-    end)
-
     local currentWeather = executeCurrentWeather()
 
     while not overrideWeather do
@@ -69,20 +65,7 @@ lib.callback.register('Renewed-Weathersync:server:setEventTime', function(source
     local weatherEvent = weatherList[index]
 
     if IsPlayerAceAllowed(source, 'command.weather') and weatherEvent then
-        local isMinus = eventTime < weatherEvent.time
-        local eventTimeEpoch = eventTime * 60
-
         weatherEvent.time = eventTime
-
-        -- Itterate through the queue behind the edited event and adjust the epoch timecycle
-        for i = index + 1, #weatherList do
-            local currentWeather = weatherList[i]
-            if isMinus then
-                currentWeather.epochTime -= eventTimeEpoch
-            else
-                currentWeather.epochTime += eventTimeEpoch
-            end
-        end
 
         return eventTime
     end
@@ -96,7 +79,6 @@ lib.addCommand('weather', {
 }, function(source)
     TriggerClientEvent('Renewed-Weather:client:viewWeatherInfo', source, weatherList)
 end)
-
 
 -- Scheduled restart --
 if useScheduledWeather then

@@ -61,7 +61,6 @@ local weatherTypes = {
 local function viewWeatherEvent(index, weatherEvent, isQueued)
     local metadata = isQueued and {
         ('Weather %s'):format(weatherEvent.weather),
-        ('Starting in %s minutes'):format(math.floor((weatherEvent.epochTime - GetCloudTimeAsInt()) / 60)),
         ('Lasting for %s minutes'):format(weatherEvent.time)
     } or {
         ('Weather %s'):format(weatherEvent.weather),
@@ -149,11 +148,7 @@ RegisterNetEvent('Renewed-Weather:client:viewWeatherInfo', function(weatherTable
     local options = {}
     local amt = 0
 
-    table.sort(weatherTable, function (a, b)
-        return a.epochTime < b.epochTime
-    end)
-
-    local currentTime = GetCloudTimeAsInt()
+    local startingIn = 0
 
     for i = 1, #weatherTable do
         local currentWeather = weatherTable[i]
@@ -161,10 +156,8 @@ RegisterNetEvent('Renewed-Weather:client:viewWeatherInfo', function(weatherTable
 
         local isQueued = i > 1
 
-        local epochMinute = math.floor((currentWeather.epochTime - currentTime ) / 60)
-
         local meatadata = isQueued and {
-            ('Starting in %s minutes'):format(epochMinute),
+            ('Starting in %s minutes'):format(startingIn),
             ('Lasting for %s minutes'):format(currentWeather.time)
         } or {
             ('%s Minutes Remaining'):format(currentWeather.time)
@@ -172,7 +165,7 @@ RegisterNetEvent('Renewed-Weather:client:viewWeatherInfo', function(weatherTable
 
         options[amt] = {
             title = isQueued and ('Upcomming Weather: %s'):format(currentWeather.weather) or ('Current Weather: %s'):format(currentWeather.weather),
-            description = isQueued and ('Starting in %s minutes'):format(epochMinute),
+            description = isQueued and ('Starting in %s minutes'):format(startingIn),
             arrow = true,
             icon = isQueued and 'fa-solid fa-cloud-arrow-up' or 'fa-solid fa-cloud',
             metadata = meatadata,
@@ -180,6 +173,8 @@ RegisterNetEvent('Renewed-Weather:client:viewWeatherInfo', function(weatherTable
                 viewWeatherEvent(i, currentWeather, isQueued)
             end
         }
+
+        startingIn += currentWeather.time
     end
 
 
