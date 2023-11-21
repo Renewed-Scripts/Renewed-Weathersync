@@ -2,14 +2,13 @@ local Config = require 'config.time'
 
 local globalState = GlobalState
 
+local useRealTime = Config.useRealTime
+
 -- GlobalState checks here are to ensure that the if the script is being restarted live the time doesn't reset.
-local configScale = Config.timeScale
-local currentScale = globalState.timeScale or (configScale > 2000 and configScale) or 2000
+local configScale = useRealTime and 60000 or Config.timeScale
+local currentScale = globalState.timeScale or configScale
 local freezeTime = globalState.freezeTime
-local startTime = globalState.currentTime or {
-    hour = Config.startUpHour,
-    minute = Config.startUpMinute,
-}
+local startTime = useRealTime and { hour = tonumber(os.date('%H')), minute = tonumber(os.date('%M')) } or Config.startUpTime
 
 local minute = startTime.minute
 local hour = startTime.hour
@@ -51,12 +50,14 @@ AddStateBagChangeHandler('currentTime', 'global', function(_, _, value)
         hour = value.hour
         minute = value.minute
 
-        if (hour > nightStart or hour < nightEnd) and currentScale ~= nightScale then
-            currentScale = nightScale
-            globalState.timeScale = currentScale
-        elseif (hour < nightStart and hour > nightEnd) and currentScale ~= configScale then
-            currentScale = configScale
-            globalState.timeScale = currentScale
+        if not useRealTime and Config.useNightScale then
+            if (hour > nightStart or hour < nightEnd) and currentScale ~= nightScale then
+                currentScale = nightScale
+                globalState.timeScale = currentScale
+            elseif (hour < nightStart and hour > nightEnd) and currentScale ~= configScale then
+                currentScale = configScale
+                globalState.timeScale = currentScale
+            end
         end
     end
 end)
@@ -92,34 +93,36 @@ lib.addCommand('time', {
     }
 end)
 
-lib.addCommand('timescale', {
-    help = ('Set milliseconds per game second (default %s)'):format(currentScale),
-    restricted = 'group.admin',
-    params = {
-        {
-            name = 'scale',
-            type = 'number',
-            help = 'Milliseconds per game second',
+if not useRealTime then
+    lib.addCommand('timescale', {
+        help = ('Set milliseconds per game second (default %s)'):format(currentScale),
+        restricted = 'group.admin',
+        params = {
+            {
+                name = 'scale',
+                type = 'number',
+                help = 'Milliseconds per game second',
+            },
         },
-    },
-}, function(_, args) -- source, args
-    if args.scale > 2000 then
-        globalState.timeScale = args.scale
-    end
-end)
+    }, function(_, args) -- source, args
+        if args.scale > 2000 then
+            globalState.timeScale = args.scale
+        end
+    end)
 
-lib.addCommand('freezetime', {
-    help = 'Freeze / unfreeze time',
-    restricted = 'group.admin',
-    params = {
-        {
-            name = 'time',
-            type = 'number',
-            help = 'Freeze time? (1 = yes, 0 = no)',
+    lib.addCommand('freezetime', {
+        help = 'Freeze / unfreeze time',
+        restricted = 'group.admin',
+        params = {
+            {
+                name = 'time',
+                type = 'number',
+                help = 'Freeze time? (1 = yes, 0 = no)',
+            },
         },
-    },
-}, function(_, args)
-    local newFreeze = args.time == 1 and true or false
+    }, function(_, args)
+        local newFreeze = args.time == 1 and true or false
 
-    globalState.freezeTime = newFreeze
-end)
+        globalState.freezeTime = newFreeze
+    end)
+end

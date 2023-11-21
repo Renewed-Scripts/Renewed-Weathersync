@@ -1,5 +1,7 @@
 return {
     timeScale = 4000, -- How many milliseconds per minute in GTA time (2000ms is normal for a 48 minute day)
+
+    useNightScale = true, -- If true, the server will use timeScaleNight to alter the time during night
     timeScaleNight = 8000, -- How many milliseconds per minute in GTA time DURING NIGHT
 
     nightTime = {
@@ -7,7 +9,11 @@ return {
         ending = 6
     },
 
-    startUpHour = 16, -- The hour the server will start at
-    startUpMinute = 0, -- The minute the server will start at
+    useRealTime = false, -- If true, the server will override all other configs and use the servers real time.
+
+    startUpTime = {
+        hour = 12,
+        minute = 0
+    }
 }
 
