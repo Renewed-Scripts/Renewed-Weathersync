@@ -20,8 +20,8 @@ local function containsRain(sequence)
     return false
 end
 
-local function isSequenceAllowed(sequence, hasRain, minutesSinceRain)
-    return sequence.probability >= math.random() and (not sequence.month or sequence.month == currentMonth) and (not hasRain or minutesSinceRain >= Config.timeBetweenRain)
+local function isSequenceAllowed(sequence, hasRain, minutesSinceRain, timeBeforeRain)
+    return sequence.probability >= math.random() and (not sequence.month or sequence.month == currentMonth) and (not hasRain or minutesSinceRain >= Config.timeBetweenRain or timeBeforeRain <= 0)
 end
 
 local function insertEvents(events, weatherList, weatherInEpoch)
@@ -38,7 +38,7 @@ local function insertEvents(events, weatherList, weatherInEpoch)
     return timeUsed
 end
 
-local function insertAllowedSequences(sequences, minutesSinceRain, weatherInEpoch)
+local function insertAllowedSequences(sequences, minutesSinceRain, weatherInEpoch, timeBeforeRain)
     local timeUsed = 0
 
     local weatherList = {}
@@ -47,11 +47,12 @@ local function insertAllowedSequences(sequences, minutesSinceRain, weatherInEpoc
         local sequence = sequences[i]
 
         local hasRain = containsRain(sequence.events)
-        if isSequenceAllowed(sequence, hasRain, minutesSinceRain) then
+        if isSequenceAllowed(sequence, hasRain, minutesSinceRain, timeBeforeRain) then
             local sequenceTime = insertEvents(sequence.events, weatherList, weatherInEpoch)
             timeUsed += sequenceTime
             weatherInEpoch += sequenceTime * 60
             minutesSinceRain = hasRain and 0 or minutesSinceRain + timeUsed
+            timeBeforeRain = not hasRain and timeBeforeRain - timeUsed or timeBeforeRain
         end
     end
 
@@ -60,8 +61,8 @@ end
 
 
 -- Weather Event Functions --
-local function isWeatherEventAllowed(chance, hasRain, minutesSinceRain)
-    return chance >= math.random() and (not hasRain or minutesSinceRain >= Config.timeBetweenRain)
+local function isWeatherEventAllowed(chance, hasRain, minutesSinceRain, timeBeforeRain)
+    return chance >= math.random() and (not hasRain or minutesSinceRain >= Config.timeBetweenRain or timeBeforeRain <= 0)
 end
 
 local function getWeatherEvent(weather, weatherInEpoch)
@@ -94,7 +95,6 @@ end
 return function()
     local weatherList = {}
 
-
     if Config.decemberSnow and currentMonth == 12 then
         return getDecemberSnow()
     end
@@ -103,21 +103,25 @@ return function()
     local minutesSinceRain = Config.timeBetweenRain + 1
     local weatherInEpoch = os.time()
 
+    local timeBeforeRain = Config.rainAfterRestart
+
     while true do
         if Config.useWeatherSequences then
-            local timeUsed, rainMinutes, sequenceList = insertAllowedSequences(Config.weatherSequences, minutesSinceRain, weatherInEpoch)
+            local timeUsed, rainMinutes, sequenceList = insertAllowedSequences(Config.weatherSequences, minutesSinceRain, weatherInEpoch, timeBeforeRain)
             minutesSinceRain = rainMinutes
             minutesLeft -= timeUsed
             weatherInEpoch += timeUsed * 60
+            timeBeforeRain = rainMinutes == 0 and timeBeforeRain - timeUsed or timeBeforeRain
             concatArray(weatherList, sequenceList)
         end
 
         if Config.useStaticWeather then
             for weather, chance in pairs(Config.staticWeather) do
                 local hasRain = rainFilter[weather]
-                if isWeatherEventAllowed(chance, hasRain, minutesSinceRain) then
+                if isWeatherEventAllowed(chance, hasRain, minutesSinceRain, timeBeforeRain) then
                     weatherList[#weatherList+1] = getWeatherEvent(weather, weatherInEpoch)
                     minutesSinceRain = hasRain and 0 or minutesSinceRain + cycleTimer
+                    timeBeforeRain = not hasRain and timeBeforeRain - cycleTimer or timeBeforeRain
                     minutesLeft -= cycleTimer
                     weatherInEpoch += cycleTimer * 60
                 end
