@@ -51,7 +51,7 @@ local function setWeather(forceSwap)
     end
 
     if serverWeather.windDirection then
-        SetWindDirection(math.rad(serverWeather.WindDirection))
+        SetWindDirection(math.rad(serverWeather.windDirection))
     end
 
     if serverWeather.windSpeed then
