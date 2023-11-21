@@ -3,20 +3,35 @@ local buildWeatherList = require 'server.weatherbuilder'
 local useScheduledWeather = require 'config.weather'.useScheduledWeather
 local weatherList = buildWeatherList()
 
+local overrideWeather = false
 
 -- weatherList executor --
+local function executeCurrentWeather()
+    local weather = weatherList[1]
+
+    if weather then
+        GlobalState.weather = weather
+    end
+
+    return weather
+end
+
 local function runWeatherList()
     table.sort(weatherList, function (a, b)
         return a.epochTime < b.epochTime
     end)
 
-    for i = 1, #weatherList do
-        local currentWeather = weatherList[i]
+    local currentWeather = executeCurrentWeather()
 
-        if currentWeather then
-            GlobalState.weather = currentWeather
-            Wait(currentWeather.time * 60000)
+    while not overrideWeather do
+        currentWeather.time -= 1
+
+        if currentWeather.time <= 0 then
+            table.remove(weatherList, 1)
+            currentWeather = executeCurrentWeather()
         end
+
+        Wait(60000)
     end
 end
 
@@ -74,27 +89,16 @@ end)
 
 -- Scheduled restart --
 if useScheduledWeather then
-    local function forceSetWeather(weather)
-        for i = 1, #weatherList do
-            local event = weatherList[i]
-
-            if event then
-                event.weather = weather
-            end
-        end
-
-        GlobalState.weather = {
-            weather = weather
-        }
-    end
-
     AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
-        if eventData.secondsRemaining == 900 then -- 15 Minutes Remaining
-            forceSetWeather('OVERCAST')
-        elseif eventData.secondsRemaining == 600 then -- 10 Minutes Remaining
-            forceSetWeather('RAIN')
-        elseif eventData.secondsRemaining == 300 then -- 5 Minutes Remaining
-            forceSetWeather('THUNDER')
+        local secondsRemaining = eventData.secondsRemaining
+        local weather = secondsRemaining == 900 and 'OVERCAST' or secondsRemaining == 600 and 'RAIN' or secondsRemaining == 300 and 'THUNDER'
+
+        if weather then
+            overrideWeather = true
+            GlobalState.weather = {
+                weather = weather,
+                time = 9000000
+            }
         end
     end)
 end

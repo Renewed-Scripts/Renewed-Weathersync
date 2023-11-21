@@ -145,6 +145,10 @@ RegisterNetEvent('Renewed-Weather:client:viewWeatherInfo', function(weatherTable
     local options = {}
     local amt = 0
 
+    table.sort(weatherTable, function (a, b)
+        return a.epochTime < b.epochTime
+    end)
+
     local currentTime = GetCloudTimeAsInt()
 
     for i = 1, #weatherTable do
@@ -158,15 +162,14 @@ RegisterNetEvent('Renewed-Weather:client:viewWeatherInfo', function(weatherTable
         options[amt] = {
             title = isQueued and currentWeather.weather or ('Current Weather: %s'):format(currentWeather.weather),
             description = isQueued and ('Starting in %s minutes'):format(epochMinute),
-            arrow = isQueued,
-            readOnly = not isQueued,
+            arrow = true,
             icon = isQueued and 'fa-solid fa-cloud-arrow-up' or 'fa-solid fa-cloud',
-            metadata = isQueued and {
+            metadata = {
                 ('Weather %s'):format(currentWeather.weather),
                 ('Starting in %s minutes'):format(epochMinute),
                 ('Lasting for %s minutes'):format(currentWeather.time)
             },
-            onSelect = isQueued and function()
+            onSelect = function()
                 viewWeatherEvent(i, currentWeather)
             end
         }
