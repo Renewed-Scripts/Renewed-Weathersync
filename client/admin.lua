@@ -58,7 +58,15 @@ local weatherTypes = {
     },
 }
 
-local function viewWeatherEvent(index, weatherEvent)
+local function viewWeatherEvent(index, weatherEvent, isQueued)
+    local metadata = isQueued and {
+        ('Weather %s'):format(weatherEvent.weather),
+        ('Starting in %s minutes'):format(math.floor((weatherEvent.epochTime - GetCloudTimeAsInt()) / 60)),
+        ('Lasting for %s minutes'):format(weatherEvent.time)
+    } or {
+        ('Weather %s'):format(weatherEvent.weather),
+        ('%s Minutes Remaining'):format(weatherEvent.time)
+    }
     lib.registerContext({
         id = 'Renewed-Weathersync:client:changeWeather',
         title = 'Change Weather',
@@ -68,11 +76,7 @@ local function viewWeatherEvent(index, weatherEvent)
                 title = 'Info',
                 icon = 'fa-solid fa-circle-info',
                 readOnly = true,
-                metadata = {
-                    ('Weather %s'):format(weatherEvent.weather),
-                    ('Starting in %s minutes'):format(math.floor((weatherEvent.epochTime - GetCloudTimeAsInt()) / 60)),
-                    ('Lasting for %s minutes'):format(weatherEvent.time)
-                }
+                metadata = metadata
             },
             {
                 title = 'Change Weather',
@@ -159,18 +163,21 @@ RegisterNetEvent('Renewed-Weather:client:viewWeatherInfo', function(weatherTable
 
         local epochMinute = math.floor((currentWeather.epochTime - currentTime ) / 60)
 
+        local meatadata = isQueued and {
+            ('Starting in %s minutes'):format(epochMinute),
+            ('Lasting for %s minutes'):format(currentWeather.time)
+        } or {
+            ('%s Minutes Remaining'):format(currentWeather.time)
+        }
+
         options[amt] = {
-            title = isQueued and currentWeather.weather or ('Current Weather: %s'):format(currentWeather.weather),
+            title = isQueued and ('Upcomming Weather: %s'):format(currentWeather.weather) or ('Current Weather: %s'):format(currentWeather.weather),
             description = isQueued and ('Starting in %s minutes'):format(epochMinute),
             arrow = true,
             icon = isQueued and 'fa-solid fa-cloud-arrow-up' or 'fa-solid fa-cloud',
-            metadata = {
-                ('Weather %s'):format(currentWeather.weather),
-                ('Starting in %s minutes'):format(epochMinute),
-                ('Lasting for %s minutes'):format(currentWeather.time)
-            },
+            metadata = meatadata,
             onSelect = function()
-                viewWeatherEvent(i, currentWeather)
+                viewWeatherEvent(i, currentWeather, isQueued)
             end
         }
     end

@@ -24,13 +24,17 @@ local function runWeatherList()
     local currentWeather = executeCurrentWeather()
 
     while not overrideWeather do
-        currentWeather.time -= 1
 
-        if currentWeather.time <= 0 then
-            table.remove(weatherList, 1)
+        if weatherList[1] then
+            currentWeather.time -= 1
+
+            if currentWeather.time <= 0 then
+                table.remove(weatherList, 1)
+                currentWeather = executeCurrentWeather()
+            end
+        else
             currentWeather = executeCurrentWeather()
         end
-
         Wait(60000)
     end
 end
@@ -47,6 +51,13 @@ end)
 lib.callback.register('Renewed-Weathersync:server:setWeatherType', function(source, index, weatherType)
     if IsPlayerAceAllowed(source, 'command.weather') and weatherList[index] then
         weatherList[index].weather = weatherType
+
+        if index == 1 then
+            local currentWeather = weatherList[1]
+            currentWeather.weather = weatherType
+
+            GlobalState.weather = currentWeather
+        end
 
         return weatherType
     end
