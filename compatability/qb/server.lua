@@ -60,3 +60,23 @@ exportHandler('getTime', function()
 
     return currentTime.hour, currentTime.minute
 end)
+
+RegisterNetEvent('qb-weathersync:server:setWeather', function(weather)
+    if not IsPlayerAceAllowed(source, 'command.weather') then
+        return
+    end
+    globalState.weather = {
+        weather = weather,
+        time = 9999999999
+    }
+end)
+
+RegisterNetEvent('qb-weathersync:server:setTime', function(hour, minute)
+    if not IsPlayerAceAllowed(source, 'command.time') then
+        return
+    end
+    globalState.currentTime = {
+        hour = hour,
+        minute = minute,
+    }
+end)
