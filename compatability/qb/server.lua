@@ -76,7 +76,7 @@ RegisterNetEvent('qb-weathersync:server:setTime', function(hour, minute)
         return
     end
     globalState.currentTime = {
-        hour = hour,
-        minute = minute,
-    }
+        hour = tonumber(hour),
+        minute = tonumber(minute) or 0,
+     }
 end)
