@@ -75,8 +75,10 @@ RegisterNetEvent('qb-weathersync:server:setTime', function(hour, minute)
     if not IsPlayerAceAllowed(source, 'command.time') then
         return
     end
+    local h = tonumber(hour)
+    local m = tonumber(minute) or 00
     globalState.currentTime = {
-        hour = hour,
-        minute = minute,
+        hour = h,
+        minute = m,
     }
 end)
