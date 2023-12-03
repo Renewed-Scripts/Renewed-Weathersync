@@ -169,6 +169,7 @@ return {
                 },
                 {
                     weather = 'EXTRASUNNY',
+                    time = 15, -- minutes
                     windSpeed = 0.5,
                 },
             },
