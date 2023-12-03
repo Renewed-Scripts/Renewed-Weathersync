@@ -97,6 +97,7 @@ end)
 AddStateBagChangeHandler('syncWeather', ('player:%s'):format(cache.serverId), function(_, _, value)
     if not value then
         SetTimeout(0, function()
+            resetWeatherParticles()
             while not playerState.syncWeather do
                 SetRainLevel(0.0)
                 SetWeatherTypePersist('EXTRASUNNY')
