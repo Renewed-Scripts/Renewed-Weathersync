@@ -84,8 +84,11 @@ AddStateBagChangeHandler('blackOut', 'global', function(_, _, value)
     SetArtificialLightsStateAffectsVehicles(false)
 end)
 
--- Some startup shit --
 CreateThread(function ()
+    while not NetworkIsSessionStarted() do -- Possible fix for slow clients
+        Wait(100)
+    end
+
     SetWind(0.1)
     WaterOverrideSetStrength(0.5)
 
