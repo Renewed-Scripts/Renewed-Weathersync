@@ -129,43 +129,43 @@ return {
                     weather = 'SNOW',
                     time = math.random(5, 10), -- Minutes
                     windSpeed = 1.0,
-                    HasSnow = true,
+                    hasSnow = true,
                 },
                 {
                     weather = 'BLIZZARD',
                     time = 14, -- Minutes
                     windSpeed = 3.0,
-                    HasSnow = true,
+                    hasSnow = true,
                 },
                 {
                     weather = 'SNOW',
                     time = 15, -- Minutes
                     windSpeed = 2.0,
-                    HasSnow = true,
+                    hasSnow = true,
                 },
                 {
                     weather = 'SNOWLIGHT',
                     time = 20, -- Minutes
                     windSpeed = 1.0,
-                    HasSnow = true,
+                    hasSnow = true,
                 },
                 {
                     weather = 'OVERCAST',
                     windSpeed = 0.5,
                     time = 15, -- Minutes
-                    HasSnow = true,
+                    hasSnow = true,
                 },
                 {
                     weather = 'CLOUDS',
                     windSpeed = 0.5,
                     time = 15, -- Minutes
-                    HasSnow = true,
+                    hasSnow = true,
                 },
                 {
                     weather = 'CLEAR',
                     windSpeed = 0.5,
                     time = 15, -- Minutes
-                    HasSnow = true,
+                    hasSnow = true,
                 },
                 {
                     weather = 'EXTRASUNNY',
