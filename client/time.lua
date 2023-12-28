@@ -33,7 +33,7 @@ AddStateBagChangeHandler('freezeTime', 'global', function(_, _, value)
     timeFrozen = value
 end)
 
-NetworkOverrideClockMillisecondsPerGameMinute(timeScale)
+NetworkOverrideClockMillisecondsPerGameMinute(timeFrozen and 99999999 or timeScale)
 
 AddStateBagChangeHandler('syncWeather', ('player:%s'):format(cache.serverId), function(_, _, value)
     if value then
