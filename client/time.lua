@@ -15,7 +15,7 @@ AddStateBagChangeHandler('currentTime', 'global', function(_, _, value)
 end)
 
 AddStateBagChangeHandler('timeScale', 'global', function(_, _, value)
-    if value then
+    if value and type(value) == 'number' then
 
         if playerState.syncWeather then
             NetworkOverrideClockMillisecondsPerGameMinute(value)
