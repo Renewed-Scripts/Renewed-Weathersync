@@ -43,6 +43,6 @@ AddStateBagChangeHandler('syncWeather', ('player:%s'):format(cache.serverId), fu
         end
     else
         NetworkOverrideClockMillisecondsPerGameMinute(99999999)
-        NetworkOverrideClockTime(18, 0, 0)
+        NetworkOverrideClockTime(21, 0, 0)
     end
 end)
