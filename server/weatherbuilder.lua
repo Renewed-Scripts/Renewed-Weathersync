@@ -1,4 +1,4 @@
-local Config = require 'config.weather'
+local Config = lib.load('config.weather')
 
 local currentMonth = tonumber(os.date('%m'))
 
@@ -68,7 +68,7 @@ local function isWeatherEventAllowed(chance, hasRain, minutesSinceRain, timeBefo
         for i = weatherAmount - 5, weatherAmount do
             if weatherList[i].weather == weather then
                 count += 1
-
+                
                 if count > 1 then
                     return false
                 end
