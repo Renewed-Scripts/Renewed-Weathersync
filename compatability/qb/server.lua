@@ -1,4 +1,4 @@
-local Config = require 'config.weather'
+local Config = lib.load('config.weather')
 
 local globalState = GlobalState
 
@@ -9,11 +9,11 @@ local function exportHandler(exportName, func)
 end
 
 exportHandler('nextWeatherStage', function()
-    return print("RENEWED WEATHERSYNC - THIS EXPORT IS NOT SUPPORTED")
+    return print("RENEWED WEATHERSYNC - THIS EXPORT IS NOT SUPPORTED (nextWeatherStage)")
 end)
 
 exportHandler('setDynamicWeather', function()
-    return print("RENEWED WEATHERSYNC - THIS EXPORT IS NOT SUPPORTED")
+    return print("RENEWED WEATHERSYNC - THIS EXPORT IS NOT SUPPORTED (setDynamicWeather)")
 end)
 
 
