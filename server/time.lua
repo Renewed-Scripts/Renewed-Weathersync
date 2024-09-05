@@ -35,9 +35,7 @@ end)
 
 -- Add server side statebag change handlers so third party resources can set globalstates and we can replicate the data.
 AddStateBagChangeHandler('freezeTime', 'global', function(_, _, value)
-    if value and next(value) then
-        freezeTime = value
-    end
+    freezeTime = value
 end)
 
 
