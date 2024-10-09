@@ -95,6 +95,7 @@ CreateThread(function ()
     setWeather(true)
 
     playerState.syncWeather = true
+    playerState.playerWeather = 'EXTRASUNNY'
 end)
 
 AddStateBagChangeHandler('syncWeather', ('player:%s'):format(cache.serverId), function(_, _, value)
@@ -102,10 +103,11 @@ AddStateBagChangeHandler('syncWeather', ('player:%s'):format(cache.serverId), fu
         SetTimeout(0, function()
             resetWeatherParticles()
             while not playerState.syncWeather do
+                local setWeather = playerState.playerWeather or 'EXTRASUNNY'
                 SetRainLevel(0.0)
-                SetWeatherTypePersist('EXTRASUNNY')
-                SetWeatherTypeNow('EXTRASUNNY')
-                SetWeatherTypeNowPersist('EXTRASUNNY')
+                SetWeatherTypePersist(setWeather)
+                SetWeatherTypeNow(setWeather)
+                SetWeatherTypeNowPersist(setWeather)
                 Wait(2500)
             end
         end)
