@@ -96,6 +96,13 @@ CreateThread(function ()
 
     playerState.syncWeather = true
     playerState.playerWeather = 'EXTRASUNNY'
+
+    -- set blackout to the same state as server has
+    if type(blackout) == 'boolean' then
+        SetArtificialLightsState(blackout)
+    end
+
+    SetArtificialLightsStateAffectsVehicles(false)
 end)
 
 AddStateBagChangeHandler('syncWeather', ('player:%s'):format(cache.serverId), function(_, _, value)
