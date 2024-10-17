@@ -1,5 +1,6 @@
 local serverWeather = GlobalState.weather
 local hadSnow = false
+local blackout = GlobalState.blackout
 local playerState = LocalPlayer.state
 
 local function resetWeatherParticles()
