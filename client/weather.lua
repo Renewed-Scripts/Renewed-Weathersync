@@ -1,6 +1,5 @@
 local serverWeather = GlobalState.weather
 local hadSnow = false
-local blackout = GlobalState.blackout
 local playerState = LocalPlayer.state
 
 local function resetWeatherParticles()
@@ -89,7 +88,6 @@ CreateThread(function ()
     while not NetworkIsSessionStarted() do -- Possible fix for slow clients
         Wait(100)
     end
-
     SetWind(0.1)
     WaterOverrideSetStrength(0.5)
 
@@ -99,8 +97,8 @@ CreateThread(function ()
     playerState.playerWeather = 'EXTRASUNNY'
 
     -- set blackout to the same state as server has
-    if type(blackout) == 'boolean' then
-        SetArtificialLightsState(blackout)
+    if type(GlobalState.blackout) == 'boolean' then
+        SetArtificialLightsState(GlobalState.blackout)
     end
 
     SetArtificialLightsStateAffectsVehicles(false)
