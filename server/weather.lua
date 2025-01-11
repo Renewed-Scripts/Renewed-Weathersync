@@ -80,6 +80,13 @@ lib.addCommand('weather', {
     TriggerClientEvent('Renewed-Weather:client:viewWeatherInfo', source, weatherList)
 end)
 
+lib.addCommand('blackout', {
+    help = 'Enable or disable the power blackout',
+    restricted = 'group.admin',
+}, function()
+    GlobalState.blackOut = not GlobalState.blackOut
+end)
+
 -- Scheduled restart --
 if useScheduledWeather then
     AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
