@@ -1,6 +1,9 @@
 local buildWeatherList = require 'server.weatherbuilder'
 
 local useScheduledWeather = lib.load('config.weather').useScheduledWeather
+
+
+---@type renewed_weather[]
 local weatherList = buildWeatherList()
 
 local overrideWeather = false
@@ -10,7 +13,7 @@ local function executeCurrentWeather()
     local weather = weatherList[1]
 
     if weather then
-        GlobalState.weather = weather
+        GlobalState.weather = weather:GetWeatherData()
     end
 
     return weather
@@ -46,13 +49,13 @@ end)
 
 lib.callback.register('Renewed-Weathersync:server:setWeatherType', function(source, index, weatherType)
     if IsPlayerAceAllowed(source, 'command.weather') and weatherList[index] then
-        weatherList[index].weather = weatherType
+        local weatherEvent = weatherList[index]
+
+        weatherEvent:SetWeather(weatherType)
+
 
         if index == 1 then
-            local currentWeather = weatherList[1]
-            currentWeather.weather = weatherType
-
-            GlobalState.weather = currentWeather
+            GlobalState.weather = weatherEvent:GetWeatherData()
         end
 
         return weatherType
@@ -65,7 +68,7 @@ lib.callback.register('Renewed-Weathersync:server:setEventTime', function(source
     local weatherEvent = weatherList[index]
 
     if IsPlayerAceAllowed(source, 'command.weather') and weatherEvent then
-        weatherEvent.time = eventTime
+        weatherEvent:SetEventTime(eventTime)
 
         return eventTime
     end
