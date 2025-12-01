@@ -1,9 +1,6 @@
 local buildWeatherList = require 'server.weatherbuilder'
 
 local useScheduledWeather = lib.load('config.weather').useScheduledWeather
-
-
----@type renewed_weather[]
 local weatherList = buildWeatherList()
 
 local overrideWeather = false
@@ -13,7 +10,7 @@ local function executeCurrentWeather()
     local weather = weatherList[1]
 
     if weather then
-        GlobalState.weather = weather:GetWeatherData()
+        GlobalState.weather = weather
     end
 
     return weather
@@ -49,13 +46,13 @@ end)
 
 lib.callback.register('Renewed-Weathersync:server:setWeatherType', function(source, index, weatherType)
     if IsPlayerAceAllowed(source, 'command.weather') and weatherList[index] then
-        local weatherEvent = weatherList[index]
-
-        weatherEvent:SetWeather(weatherType)
-
+        weatherList[index].weather = weatherType
 
         if index == 1 then
-            GlobalState.weather = weatherEvent:GetWeatherData()
+            local currentWeather = weatherList[1]
+            currentWeather.weather = weatherType
+
+            GlobalState.weather = currentWeather
         end
 
         return weatherType
@@ -68,7 +65,7 @@ lib.callback.register('Renewed-Weathersync:server:setEventTime', function(source
     local weatherEvent = weatherList[index]
 
     if IsPlayerAceAllowed(source, 'command.weather') and weatherEvent then
-        weatherEvent:SetEventTime(eventTime)
+        weatherEvent.time = eventTime
 
         return eventTime
     end
@@ -81,13 +78,6 @@ lib.addCommand('weather', {
     restricted = 'group.admin',
 }, function(source)
     TriggerClientEvent('Renewed-Weather:client:viewWeatherInfo', source, weatherList)
-end)
-
-lib.addCommand('blackout', {
-    help = 'Enable or disable the power blackout',
-    restricted = 'group.admin',
-}, function()
-    GlobalState.blackOut = not GlobalState.blackOut
 end)
 
 -- Scheduled restart --

@@ -56,6 +56,10 @@ local weatherTypes = {
         label = 'Xmas',
         value = 'XMAS'
     },
+    {
+        label = 'Halloween',
+        value = 'HALLOWEEN'
+    },
 }
 
 local function viewWeatherEvent(index, weatherEvent, isQueued)
