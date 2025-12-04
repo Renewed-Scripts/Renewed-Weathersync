@@ -84,13 +84,6 @@ lib.addCommand('weather', {
 end)
 
 lib.addCommand('blackout', {
-    help = 'Enable or disable the power blackout',
-    restricted = 'group.admin',
-}, function()
-    GlobalState.blackOut = not GlobalState.blackOut
-end)
-
-lib.addCommand('blackout', {
     help = 'Toggle server wide or player only blackout',
 	restricted = 'group.admin',
 	params = {
