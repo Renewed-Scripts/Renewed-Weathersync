@@ -84,6 +84,14 @@ AddStateBagChangeHandler('blackOut', 'global', function(_, _, value)
     SetArtificialLightsStateAffectsVehicles(false)
 end)
 
+AddStateBagChangeHandler('playerBlackOut', ('player:%s'):format(cache.serverId), function(_, _, value)
+    if type(value) == 'boolean' then
+        SetArtificialLightsState(value)
+    end
+
+    SetArtificialLightsStateAffectsVehicles(false)
+end)
+
 CreateThread(function ()
     while not NetworkIsSessionStarted() do -- Possible fix for slow clients
         Wait(100)
@@ -94,6 +102,7 @@ CreateThread(function ()
     setWeather(true)
 
     playerState.syncWeather = true
+    playerState.playerBlackOut = false
     playerState.playerWeather = 'EXTRASUNNY'
 
     -- set blackout to the same state as server has

@@ -84,10 +84,19 @@ lib.addCommand('weather', {
 end)
 
 lib.addCommand('blackout', {
-    help = 'Enable or disable the power blackout',
-    restricted = 'group.admin',
-}, function()
-    GlobalState.blackOut = not GlobalState.blackOut
+    help = 'Toggle server wide or player only blackout',
+	restricted = 'group.admin',
+	params = {
+		{ name = 'target', type = 'playerId', help = 'Target player\'s server id', optional = true },
+	}
+}, function(source, args)
+	if not args.target then
+		GlobalState.blackOut = not GlobalState.blackOut
+	else
+		local playerState = Player(args.target)
+        if not playerState then return end
+        playerState.state:set('playerBlackOut', not playerState.state?.playerBlackOut, true)
+	end
 end)
 
 -- Scheduled restart --
