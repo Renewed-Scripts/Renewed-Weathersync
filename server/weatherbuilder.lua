@@ -94,12 +94,13 @@ end
 
 local function getDecemberSnow()
     return {
-        {
+        ---@diagnostic disable-next-line: invisible
+        weather_class:new({
             weather = 'XMAS',
             time = 86400,
             windSpeed = 0.0,
             windDirection = 0.0,
-        }
+        })
     }
 end
 
